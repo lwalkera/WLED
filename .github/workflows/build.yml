@@ -3,7 +3,18 @@ name: WLED Build
 # Only included into other workflows
 on:
   workflow_call:
-  
+  push:
+    branches:
+      - lwalkera/*
+
+  workflow_dispatch:
+    inputs:
+    # Optional: Define inputs for your workflow
+    branch_name:
+      description: 'Branch to run the workflow on'
+      required: true
+      type: string  
+
 jobs:
 
   get_default_envs:

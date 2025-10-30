@@ -699,7 +699,7 @@ static void decodeIR(uint32_t code)
 void initIR()
 {
   if (irEnabled > 0) {
-    irrecv = new IRrecv(irPin);
+    irrecv = new IRrecv(irPin, 200);
     if (irrecv) irrecv->enableIRIn();
   } else irrecv = nullptr;
 }
@@ -722,9 +722,14 @@ void handleIR()
     irCheckedTime = currentTime;
     if (irrecv->decode(&results)) {
       if (results.value != 0 && serialCanTX) { // only print results if anything is received ( != 0 )
-        Serial.printf_P(PSTR("IR recv: 0x%lX\n"), (unsigned long)results.value);
+        Serial.printf_P(PSTR("IR recv: 0x%llX 0x%lX 0x%lX\n"), (unsigned long long)results.value, (unsigned long)results.decode_type, (unsigned long)results.address);
       }
-      decodeIR(results.value);
+      if(results.decode_type == MAGIQUEST)
+      {
+        decodeIR(results.address);
+      }
+      else
+          decodeIR(results.value);
       irrecv->resume();
     }
   }
